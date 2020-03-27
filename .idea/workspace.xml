@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="dba79ee8-98da-4508-b356-aa809570a28c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/LICENSE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/app.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/lib/config/server.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/lib/routes/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/lib/routes/socket.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1ZfqOjGFAQXYWtzVDKO81VeYRQ8" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dba79ee8-98da-4508-b356-aa809570a28c" name="Default Changelist" comment="" />
+      <created>1585240466236</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585240466236</updated>
+      <workItem from="1585240475448" duration="12356000" />
+      <workItem from="1585330712582" duration="1028000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1897" height="266" key="GridCell.Tab.0.bottom" timestamp="1585260476480">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state width="1897" height="266" key="GridCell.Tab.0.bottom/0.26.1920.1054@0.26.1920.1054" timestamp="1585260476480" />
+    <state width="1897" height="266" key="GridCell.Tab.0.center" timestamp="1585260476478">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state width="1897" height="266" key="GridCell.Tab.0.center/0.26.1920.1054@0.26.1920.1054" timestamp="1585260476478" />
+    <state width="1897" height="266" key="GridCell.Tab.0.left" timestamp="1585260476478">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state width="1897" height="266" key="GridCell.Tab.0.left/0.26.1920.1054@0.26.1920.1054" timestamp="1585260476478" />
+    <state width="1897" height="266" key="GridCell.Tab.0.right" timestamp="1585260476479">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state width="1897" height="266" key="GridCell.Tab.0.right/0.26.1920.1054@0.26.1920.1054" timestamp="1585260476479" />
+    <state x="459" y="188" key="SettingsEditor" timestamp="1585330890098">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state x="459" y="188" key="SettingsEditor/0.26.1920.1054@0.26.1920.1054" timestamp="1585330890098" />
+    <state x="626" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1585240474236">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state x="626" y="380" key="com.intellij.ide.util.TipDialog/0.26.1920.1054@0.26.1920.1054" timestamp="1585240474236" />
+  </component>
+</project>
