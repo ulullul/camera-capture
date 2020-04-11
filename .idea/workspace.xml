@@ -13,6 +13,7 @@
       <change beforePath="$PROJECT_DIR$/server/package.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/server/server.js" beforeDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,11 +39,25 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="editorconfig.notification" value="null" />
+    <property name="javascript.nodejs.core.library.configured.version" value="12.16.1" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../eliftech-school-backend" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="settings.nodejs" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -55,7 +70,14 @@
       <option name="presentableId" value="Default" />
       <updated>1585240466236</updated>
       <workItem from="1585240475448" duration="12356000" />
-      <workItem from="1585330712582" duration="1028000" />
+      <workItem from="1585330712582" duration="5773000" />
+      <workItem from="1585398697426" duration="7540000" />
+      <workItem from="1585841685648" duration="1203000" />
+      <workItem from="1585929738413" duration="14000" />
+      <workItem from="1586512608114" duration="2774000" />
+      <workItem from="1586528688201" duration="13332000" />
+      <workItem from="1586558724892" duration="1144000" />
+      <workItem from="1586600703346" duration="347000" />
     </task>
     <servers />
   </component>
@@ -68,29 +90,57 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
-    <state width="1897" height="266" key="GridCell.Tab.0.bottom" timestamp="1585260476480">
+    <state x="557" y="215" key="#Usage_Scope" timestamp="1585332608850">
       <screen x="0" y="26" width="1920" height="1054" />
     </state>
-    <state width="1897" height="266" key="GridCell.Tab.0.bottom/0.26.1920.1054@0.26.1920.1054" timestamp="1585260476480" />
-    <state width="1897" height="266" key="GridCell.Tab.0.center" timestamp="1585260476478">
+    <state x="557" y="215" key="#Usage_Scope/0.26.1920.1054@0.26.1920.1054" timestamp="1585332608850" />
+    <state x="422" y="140" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585332749509">
       <screen x="0" y="26" width="1920" height="1054" />
     </state>
-    <state width="1897" height="266" key="GridCell.Tab.0.center/0.26.1920.1054@0.26.1920.1054" timestamp="1585260476478" />
-    <state width="1897" height="266" key="GridCell.Tab.0.left" timestamp="1585260476478">
+    <state x="422" y="140" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.26.1920.1054@0.26.1920.1054" timestamp="1585332749509" />
+    <state x="746" y="261" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1585332711774">
       <screen x="0" y="26" width="1920" height="1054" />
     </state>
-    <state width="1897" height="266" key="GridCell.Tab.0.left/0.26.1920.1054@0.26.1920.1054" timestamp="1585260476478" />
-    <state width="1897" height="266" key="GridCell.Tab.0.right" timestamp="1585260476479">
+    <state x="746" y="261" key="#com.intellij.ide.macro.MacrosDialog/0.26.1920.1054@0.26.1920.1054" timestamp="1585332711774" />
+    <state x="746" y="311" width="428" height="487" key="FileChooserDialogImpl" timestamp="1585345518136">
       <screen x="0" y="26" width="1920" height="1054" />
     </state>
-    <state width="1897" height="266" key="GridCell.Tab.0.right/0.26.1920.1054@0.26.1920.1054" timestamp="1585260476479" />
-    <state x="459" y="188" key="SettingsEditor" timestamp="1585330890098">
+    <state x="746" y="311" width="428" height="487" key="FileChooserDialogImpl/0.26.1920.1054@0.26.1920.1054" timestamp="1585345518136" />
+    <state width="1897" height="266" key="GridCell.Tab.0.bottom" timestamp="1585332443396">
       <screen x="0" y="26" width="1920" height="1054" />
     </state>
-    <state x="459" y="188" key="SettingsEditor/0.26.1920.1054@0.26.1920.1054" timestamp="1585330890098" />
-    <state x="626" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1585240474236">
+    <state width="1897" height="266" key="GridCell.Tab.0.bottom/0.26.1920.1054@0.26.1920.1054" timestamp="1585332443396" />
+    <state width="1897" height="266" key="GridCell.Tab.0.center" timestamp="1585332443395">
       <screen x="0" y="26" width="1920" height="1054" />
     </state>
-    <state x="626" y="380" key="com.intellij.ide.util.TipDialog/0.26.1920.1054@0.26.1920.1054" timestamp="1585240474236" />
+    <state width="1897" height="266" key="GridCell.Tab.0.center/0.26.1920.1054@0.26.1920.1054" timestamp="1585332443395" />
+    <state width="1897" height="266" key="GridCell.Tab.0.left" timestamp="1585332443394">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state width="1897" height="266" key="GridCell.Tab.0.left/0.26.1920.1054@0.26.1920.1054" timestamp="1585332443394" />
+    <state width="1897" height="266" key="GridCell.Tab.0.right" timestamp="1585332443395">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state width="1897" height="266" key="GridCell.Tab.0.right/0.26.1920.1054@0.26.1920.1054" timestamp="1585332443395" />
+    <state x="459" y="188" width="1001" height="733" key="SettingsEditor" timestamp="1585332641217">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state x="459" y="188" width="1001" height="733" key="SettingsEditor/0.26.1920.1054@0.26.1920.1054" timestamp="1585332641217" />
+    <state x="626" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1585398701389">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state x="626" y="380" key="com.intellij.ide.util.TipDialog/0.26.1920.1054@0.26.1920.1054" timestamp="1585398701389" />
+    <state x="622" y="254" width="672" height="677" key="run.anything.popup" timestamp="1585332730541">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state x="622" y="254" width="672" height="677" key="run.anything.popup/0.26.1920.1054@0.26.1920.1054" timestamp="1585332730541" />
+    <state x="623" y="258" width="672" height="678" key="search.everywhere.popup" timestamp="1585402897273">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state x="623" y="258" width="672" height="678" key="search.everywhere.popup/0.26.1920.1054@0.26.1920.1054" timestamp="1585402897273" />
+    <state x="688" y="465" width="544" height="179" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1585332223367">
+      <screen x="0" y="26" width="1920" height="1054" />
+    </state>
+    <state x="688" y="465" width="544" height="179" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/0.26.1920.1054@0.26.1920.1054" timestamp="1585332223367" />
   </component>
 </project>

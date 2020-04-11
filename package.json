@@ -1,0 +1,45 @@
+{
+  "name": "camera-capture",
+  "version": "1.0.0",
+  "description": "camera-capture for Eliftech school",
+  "main": "index.js",
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^1.7.2",
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "canvas": "^2.6.1",
+    "cors": "^2.8.5",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "face-api.js": "^0.22.2",
+    "lodash": "^4.17.15",
+    "node-webcam": "^0.6.0",
+    "nodemon": "^2.0.3",
+    "socket.io": "^2.1.1",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec node -r esm index.js "
+  },
+  "keywords": [
+    "camera-capture",
+    "face-detection"
+  ],
+  "author": "Andrii Prytula",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ulullul/eliftech-camera-capture.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ulullul/eliftech-camera-capture/issues"
+  },
+  "homepage": "https://github.com/ulullul/eliftech-camera-capture#readme"
+}
