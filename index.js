@@ -1,11 +1,16 @@
-import express from'express';
-import nodeWebcam from"node-webcam";
+import express from 'express';
+import nodeWebcam from "node-webcam";
 import axios from 'axios';
+import fs from 'fs';
 import * as faceapi from 'face-api.js';
-import { canvas, faceDetectionNet, faceDetectionOptions, saveFile } from './common';
+import {canvas, faceDetectionNet, faceDetectionOptions, saveFile} from './common';
 import isEmpty from 'lodash/isEmpty';
 import debounce from 'lodash/debounce';
-import { v4 } from 'uuid';
+import {v4} from 'uuid';
+import upload from "./utils/s3";
+import path from 'path';
+
+require('dotenv').config();
 
 const app = express();
 
@@ -36,35 +41,49 @@ const opts = {
 };
 
 const FPS = 60;
+
 async function hello() {
 
 }
 
-const writeFaces = debounce(async (img, detections)=> {
-  console.log(detections);
+const writeFaces = debounce((img, detections, fileName, callback) => {
   const out = faceapi.createCanvasFromMedia(img);
   faceapi.draw.drawDetections(out, detections);
 
-  saveFile(`${v4()}.jpg`, out.toBuffer('image/jpeg'));
-  console.log('done, saved results to out/faceDetection.jpg');
-}, 2000);
+  saveFile(`${fileName}.jpg`, out.toBuffer('image/jpeg'));
+  console.log(`done, saved results to out/${fileName}.jpg`);
+  callback();
+}, 1500);
 
-setInterval(()=> {
-nodeWebcam.capture('test', opts, async function (err, data) {
-  if(!err) console.log('gut');
-  await faceDetectionNet.loadFromDisk('weights');
-  const img = await canvas.loadImage('test.jpg');
-  const detections = await faceapi.detectAllFaces(img, faceDetectionOptions);
-  if(!isEmpty(detections)) {
-    // console.log(detections);
-    writeFaces(img, detections);
-  }
+setInterval(() => {
+  nodeWebcam.capture('test', opts, async function (err, data) {
+    try {
+      await faceDetectionNet.loadFromDisk('weights');
+      const img = await canvas.loadImage('test.jpg');
+      const detections = await faceapi.detectAllFaces(img, faceDetectionOptions);
+      if (!isEmpty(detections)) {
+        console.log("action!!");
+        let fileName = v4();
+        writeFaces(img, detections, fileName,()=> {
+           fs.readFile(path.resolve(__dirname, `./out/${fileName}.jpg`), async function (err, data) {
+            console.log(data);
+            try {
+              await upload(data, `${fileName}.jpg`);
+            } catch (err) {
+              console.log(err);
+            }
+          });
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
 
 
-  // axios.post('http://localhost:8000/api/camera', {snapshot: `${data}`}).then(response => {
-  //   console.log('norm')
-  // }).catch(error => {
-  //   console.log('error? ',error);
-  // })
-});
+    // axios.post('http://localhost:8000/api/camera', {snapshot: `${data}`}).then(response => {
+    //   console.log('norm')
+    // }).catch(error => {
+    //   console.log('error? ',error);
+    // })
+  });
 }, 1000);

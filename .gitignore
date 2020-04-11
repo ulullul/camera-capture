@@ -3,3 +3,4 @@ out
 test.jpg
 package-lock.json
 .idea
+.env
