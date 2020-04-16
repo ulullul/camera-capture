@@ -5,10 +5,10 @@ import fs from 'fs';
 import * as faceapi from 'face-api.js';
 import {canvas, faceDetectionNet, faceDetectionOptions, saveFile} from './common';
 import isEmpty from 'lodash/isEmpty';
-import debounce from 'lodash/debounce';
 import {v4} from 'uuid';
 import upload from "./utils/s3";
 import path from 'path';
+import {differenceInMilliseconds, format} from 'date-fns';
 
 require('dotenv').config();
 
@@ -46,44 +46,55 @@ async function hello() {
 
 }
 
-const writeFaces = debounce((img, detections, fileName, callback) => {
+const writeFaces = (img, detections, fileName, callback) => {
   const out = faceapi.createCanvasFromMedia(img);
   faceapi.draw.drawDetections(out, detections);
 
   saveFile(`${fileName}.jpg`, out.toBuffer('image/jpeg'));
   console.log(`done, saved results to out/${fileName}.jpg`);
   callback();
-}, 1500);
+};
+
+let pastTime = 0;
+let currentTime = 0;
+let previousDetectionsLength = 0;
+let currentDetectionsLength = 0;
 
 setInterval(() => {
-  nodeWebcam.capture('test', opts, async function (err, data) {
+  nodeWebcam.capture('last_snapshot', opts, async function (err, data) {
     try {
       await faceDetectionNet.loadFromDisk('weights');
-      const img = await canvas.loadImage('test.jpg');
-      const detections = await faceapi.detectAllFaces(img, faceDetectionOptions);
+      const image = await canvas.loadImage('last_snapshot.jpg');
+      const detections = await faceapi.detectAllFaces(image, faceDetectionOptions);
       if (!isEmpty(detections)) {
-        console.log("action!!");
-        let fileName = v4();
-        writeFaces(img, detections, fileName,()=> {
-           fs.readFile(path.resolve(__dirname, `./out/${fileName}.jpg`), async function (err, data) {
-            console.log(data);
-            try {
-              await upload(data, `${fileName}.jpg`);
-            } catch (err) {
-              console.log(err);
-            }
+        currentTime = Date.now();
+        let timeDifference = differenceInMilliseconds(currentTime, pastTime);
+        pastTime = currentTime;
+        currentDetectionsLength = detections.length;
+        let detectionsDifference = currentDetectionsLength - previousDetectionsLength;
+        previousDetectionsLength = currentDetectionsLength;
+        if(timeDifference > 6000 || detectionsDifference !== 0) {
+          let fileName = v4();
+          writeFaces(image, detections, fileName, () => {
+            fs.readFile(path.resolve(__dirname, `./out/${fileName}.jpg`), async function (err, data) {
+              try {
+                const uploadResponse = await upload(data, `${fileName}.jpg`);
+                axios.post('https://camera-view.herokuapp.com/api/camera/events', {snapshot: uploadResponse.Location,date:format(Date.now(), "yyyy-MM-dd"), time:format(Date.now(), "HH:mm:ss")})
+              } catch (err) {
+                console.log(err);
+              }
+            });
           });
-        });
+        } else {
+          axios.post('https://camera-view.herokuapp.com/api/camera/events', {nothingChanged: 'nothing changed'}).catch(err => console.log(err));
+        }
+      } else {
+        axios.post('https://camera-view.herokuapp.com/api/camera/events', {nothingChanged: 'nothing changed'}).catch(err => console.log(err));
       }
     } catch (err) {
       console.log(err);
     }
 
 
-    // axios.post('http://localhost:8000/api/camera', {snapshot: `${data}`}).then(response => {
-    //   console.log('norm')
-    // }).catch(error => {
-    //   console.log('error? ',error);
-    // })
   });
-}, 1000);
+}, 2000);
