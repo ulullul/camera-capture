@@ -1,70 +1,81 @@
-import express from 'express';
-import nodeWebcam from "node-webcam";
+import nodeWebcam from 'node-webcam';
 import axios from 'axios';
 import fs from 'fs';
 import '@tensorflow/tfjs-node';
 import * as faceapi from 'face-api.js';
-import {canvas, faceDetectionNet, faceDetectionOptions, saveFile} from './common';
+import {
+  canvas,
+  faceDetectionNet,
+  faceDetectionOptions,
+  saveFile,
+} from './common';
 import isEmpty from 'lodash/isEmpty';
-import {v4} from 'uuid';
-import upload from "./utils/s3";
+import { v4 } from 'uuid';
+import upload from './utils/s3';
 import path from 'path';
-import {differenceInMilliseconds, format} from 'date-fns';
+import { differenceInMilliseconds, format } from 'date-fns';
+import { promisify } from 'util';
 
 require('dotenv').config();
 
-const app = express();
-
 const opts = {
-  //Picture related
   width: 1280,
   height: 720,
   quality: 100,
-  //Delay in seconds to take shot
-  //if the platform supports miliseconds
-  //use a float (0.1)
-  //Currently only on windows
   delay: 1,
-  //Save shots in memory
   saveShots: false,
-  // [jpeg, png] support varies
-  // Webcam.OutputTypes
   output: 'jpeg',
-  //Which camera to use
-  //Use Webcam.list() for results
-  //false for default device
   device: false,
-  // [location, buffer, base64]
-  // Webcam.CallbackReturnTypes
-  callbackReturn: "buffer",
-  //Logging
-  verbose: false
+  callbackReturn: 'buffer',
+  verbose: false,
 };
 
-const FPS = 60;
+const readFileAsync = promisify(fs.readFile);
 
-async function hello() {
-
+function loadLabeledImages() {
+  const labels = ['Andrii Prytula'];
+  return Promise.all(
+    labels.map(async (label) => {
+      const descriptions = [];
+      for (let i = 1; i < 2; i++) {
+          const image = await canvas.loadImage(
+          `./labeled_images/${label}/${i}.jpg`,
+        );
+        const detection = await faceapi
+          .detectSingleFace(image)
+          .withFaceLandmarks()
+          .withFaceDescriptor();
+        descriptions.push(detection.descriptor);
+      }
+      return new faceapi.LabeledFaceDescriptors(label, descriptions);
+    }),
+  );
 }
 
-const writeFaces = (img, detections, fileName, callback) => {
-  const out = faceapi.createCanvasFromMedia(img);
-  faceapi.draw.drawDetections(out, detections);
-  faceapi.draw.drawDetections(out, detections.map(res => res.detection));
-
-  detections.forEach(result => {
-    const { gender, genderProbability } = result;
-    new faceapi.draw.DrawTextField(
-      [
-        `Human face`,
-        `${gender} (${faceapi.utils.round(genderProbability)})`
-      ],
-      result.detection.box.bottomLeft
-    ).draw(out)
+const writeFaces = (img, detections, fileName, faceMatchResult) => {
+  return new Promise((resolve, reject) => {
+    const out = faceapi.createCanvasFromMedia(img);
+    faceapi.draw.drawDetections(out, detections);
+    faceapi.draw.drawDetections(
+      out,
+      detections.map((res) => res.detection),
+    );
+    detections.forEach((result, i) => {
+      const { gender, genderProbability } = result;
+      new faceapi.draw.DrawTextField(
+        [
+          faceMatchResult[i].label === 'unknown'
+            ? `Unknown human face`
+            : faceMatchResult[i].label,
+          `${gender} (${faceapi.utils.round(genderProbability)})`,
+        ],
+        result.detection.box.bottomLeft,
+      ).draw(out);
+    });
+    saveFile(`${fileName}.jpg`, out.toBuffer('image/jpeg'));
+    console.log(`done, saved results to out/${fileName}.jpg`);
+    resolve();
   });
-  saveFile(`${fileName}.jpg`, out.toBuffer('image/jpeg'));
-  console.log(`done, saved results to out/${fileName}.jpg`);
-  callback();
 };
 
 let pastTime = 0;
@@ -72,42 +83,83 @@ let currentTime = 0;
 let previousDetectionsLength = 0;
 let currentDetectionsLength = 0;
 
-setInterval(() => {
-  nodeWebcam.capture('last_snapshot', opts, async function (err, data) {
-    try {
-      await faceDetectionNet.loadFromDisk('weights');
-      await faceapi.nets.ageGenderNet.loadFromDisk('weights');
-      const image = await canvas.loadImage('last_snapshot.jpg');
-      const detections = await faceapi.detectAllFaces(image, faceDetectionOptions).withAgeAndGender();
-      if (!isEmpty(detections)) {
-        currentTime = Date.now();
-        let timeDifference = differenceInMilliseconds(currentTime, pastTime);
-        pastTime = currentTime;
-        currentDetectionsLength = detections.length;
-        let detectionsDifference = currentDetectionsLength - previousDetectionsLength;
-        previousDetectionsLength = currentDetectionsLength;
-        if(timeDifference > 6000 || detectionsDifference !== 0) {
-          let fileName = v4();
-          writeFaces(image, detections, fileName, () => {
-            fs.readFile(path.resolve(__dirname, `./out/${fileName}.jpg`), async function (err, data) {
-              try {
-                const uploadResponse = await upload(data, `${fileName}.jpg`);
-                axios.post(/*'http://localhost:8000/api/camera/events'*/'https://camera-view.herokuapp.com/api/camera/events', {snapshot: uploadResponse.Location,date:format(Date.now(), "yyyy-MM-dd"), time:format(Date.now(), "HH:mm:ss")}).then(resp => console.log(resp)).catch(err => console.log(err));
-              } catch (err) {
-                console.log(err);
-              }
-            });
-          });
+(async function run() {
+  await faceDetectionNet.loadFromDisk('weights');
+  await faceapi.nets.ageGenderNet.loadFromDisk('weights');
+  await faceapi.nets.faceLandmark68Net.loadFromDisk('weights');
+  await faceapi.nets.faceRecognitionNet.loadFromDisk('weights');
+  const labeledFaceDescriptors = await loadLabeledImages();
+  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, 0.5);
+
+  setInterval(() => {
+    nodeWebcam.capture('last_snapshot', opts, async () => {
+      try {
+        const image = await canvas.loadImage('last_snapshot.jpg');
+        const detections = await faceapi
+          .detectAllFaces(image, faceDetectionOptions)
+          .withFaceLandmarks()
+          .withFaceDescriptors()
+          .withAgeAndGender();
+
+        if (!isEmpty(detections)) {
+          const faceMatchResult = detections.map((d) =>
+            faceMatcher.findBestMatch(d.descriptor),
+          );
+          currentTime = Date.now();
+          let timeDifference = differenceInMilliseconds(currentTime, pastTime);
+          pastTime = currentTime;
+          currentDetectionsLength = detections.length;
+          let detectionsDifference =
+            currentDetectionsLength - previousDetectionsLength;
+          previousDetectionsLength = currentDetectionsLength;
+          if (timeDifference > 6000 || detectionsDifference !== 0) {
+            try {
+              let fileName = v4();
+              await writeFaces(image, detections, fileName, faceMatchResult);
+              const finalImage = await readFileAsync(
+                path.resolve(__dirname, `./out/${fileName}.jpg`),
+              );
+              const uploadResponse = await upload(
+                finalImage,
+                `${fileName}.jpg`,
+              );
+              await axios.post(
+                'http://localhost:8000/api/camera/events' /*'https://camera-view.herokuapp.com/api/camera/events'*/,
+                {
+                  snapshot: uploadResponse.Location,
+                  date: format(Date.now(), 'yyyy-MM-dd'),
+                  time: format(Date.now(), 'HH:mm:ss'),
+                  faces: faceMatchResult
+                    .map((faceMatch) => faceMatch.label)
+                    .join(', '),
+                },
+              );
+            } catch (error) {
+              console.log(error);
+            }
+          } else {
+            try {
+              await axios.post(
+                'https://camera-view.herokuapp.com/api/camera/events',
+                { nothingChanged: 'nothing changed' },
+              );
+            } catch (error) {
+              console.log(error);
+            }
+          }
         } else {
-          axios.post('https://camera-view.herokuapp.com/api/camera/events', {nothingChanged: 'nothing changed'}).catch(err => console.log(err));
+          try {
+            await axios.post(
+              'https://camera-view.herokuapp.com/api/camera/events',
+              { nothingChanged: 'nothing changed' },
+            );
+          } catch (error) {
+            console.log(error);
+          }
         }
-      } else {
-        axios.post('https://camera-view.herokuapp.com/api/camera/events', {nothingChanged: 'nothing changed'}).catch(err => console.log(err));
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
-    }
-
-
-  });
-}, 2000);
+    });
+  }, 2000);
+})();
