@@ -2,6 +2,7 @@ import express from 'express';
 import nodeWebcam from "node-webcam";
 import axios from 'axios';
 import fs from 'fs';
+import '@tensorflow/tfjs-node';
 import * as faceapi from 'face-api.js';
 import {canvas, faceDetectionNet, faceDetectionOptions, saveFile} from './common';
 import isEmpty from 'lodash/isEmpty';
@@ -49,7 +50,18 @@ async function hello() {
 const writeFaces = (img, detections, fileName, callback) => {
   const out = faceapi.createCanvasFromMedia(img);
   faceapi.draw.drawDetections(out, detections);
+  faceapi.draw.drawDetections(out, detections.map(res => res.detection));
 
+  detections.forEach(result => {
+    const { gender, genderProbability } = result;
+    new faceapi.draw.DrawTextField(
+      [
+        `Human face`,
+        `${gender} (${faceapi.utils.round(genderProbability)})`
+      ],
+      result.detection.box.bottomLeft
+    ).draw(out)
+  });
   saveFile(`${fileName}.jpg`, out.toBuffer('image/jpeg'));
   console.log(`done, saved results to out/${fileName}.jpg`);
   callback();
@@ -64,8 +76,9 @@ setInterval(() => {
   nodeWebcam.capture('last_snapshot', opts, async function (err, data) {
     try {
       await faceDetectionNet.loadFromDisk('weights');
+      await faceapi.nets.ageGenderNet.loadFromDisk('weights');
       const image = await canvas.loadImage('last_snapshot.jpg');
-      const detections = await faceapi.detectAllFaces(image, faceDetectionOptions);
+      const detections = await faceapi.detectAllFaces(image, faceDetectionOptions).withAgeAndGender();
       if (!isEmpty(detections)) {
         currentTime = Date.now();
         let timeDifference = differenceInMilliseconds(currentTime, pastTime);
@@ -79,7 +92,7 @@ setInterval(() => {
             fs.readFile(path.resolve(__dirname, `./out/${fileName}.jpg`), async function (err, data) {
               try {
                 const uploadResponse = await upload(data, `${fileName}.jpg`);
-                axios.post('https://camera-view.herokuapp.com/api/camera/events', {snapshot: uploadResponse.Location,date:format(Date.now(), "yyyy-MM-dd"), time:format(Date.now(), "HH:mm:ss")})
+                axios.post(/*'http://localhost:8000/api/camera/events'*/'https://camera-view.herokuapp.com/api/camera/events', {snapshot: uploadResponse.Location,date:format(Date.now(), "yyyy-MM-dd"), time:format(Date.now(), "HH:mm:ss")}).then(resp => console.log(resp)).catch(err => console.log(err));
               } catch (err) {
                 console.log(err);
               }
