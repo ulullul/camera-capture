@@ -1,6 +1,7 @@
 node_modules
 out
-test.jpg
+last_snapshot.jpg
 package-lock.json
 .idea
 .env
+labeled_images

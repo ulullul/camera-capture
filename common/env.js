@@ -12,4 +12,4 @@ const canvas = require('canvas');
 const { Canvas, Image, ImageData } = canvas;
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 
-export { canvas }
+export { canvas };

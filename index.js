@@ -30,15 +30,13 @@ const opts = {
   verbose: false,
 };
 
-const readFileAsync = promisify(fs.readFile);
-
 function loadLabeledImages() {
-  const labels = ['Andrii Prytula'];
+  const labels = ['Andrii Prytula', 'Alex Fox', 'Maxim Lohviniuk', 'Vitalii Perehonchuk'];
   return Promise.all(
     labels.map(async (label) => {
       const descriptions = [];
       for (let i = 1; i < 2; i++) {
-          const image = await canvas.loadImage(
+        const image = await canvas.loadImage(
           `./labeled_images/${label}/${i}.jpg`,
         );
         const detection = await faceapi
@@ -51,6 +49,10 @@ function loadLabeledImages() {
     }),
   );
 }
+
+const readFileAsync = promisify(fs.readFile);
+
+
 
 const writeFaces = (img, detections, fileName, faceMatchResult) => {
   return new Promise((resolve, reject) => {

@@ -1,6 +1,8 @@
 import AWS from 'aws-sdk';
 
-AWS.config.credentials = new AWS.SharedIniFileCredentials({profile: 'default'});
+AWS.config.credentials = new AWS.SharedIniFileCredentials({
+  profile: 'default',
+});
 
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_KEY,
@@ -9,13 +11,15 @@ const s3 = new AWS.S3({
 
 export default function upload(file, filename) {
   return new Promise((resolve, reject) => {
-    s3.upload({
+    s3.upload(
+      {
         ACL: 'public-read',
         Body: file,
         Bucket: process.env.AWS_BUCKET,
         ContentType: 'image/jpeg',
         Key: filename,
-      }, (err, data) => err ? reject(err) : resolve(data)
-    )
-  })
+      },
+      (err, data) => (err ? reject(err) : resolve(data)),
+    );
+  });
 }

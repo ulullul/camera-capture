@@ -13,7 +13,7 @@ const scoreThreshold = 0.3;
 function getFaceDetectorOptions(net) {
   return net === faceapi.nets.ssdMobilenetv1
     ? new faceapi.SsdMobilenetv1Options({ minConfidence })
-    : new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold })
+    : new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold });
 }
 
 export const faceDetectionOptions = getFaceDetectorOptions(faceDetectionNet);
