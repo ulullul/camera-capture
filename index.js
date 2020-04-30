@@ -10,6 +10,7 @@ import {
   saveFile,
 } from './common';
 import isEmpty from 'lodash/isEmpty';
+import forEach from 'lodash/forEach';
 import { v4 } from 'uuid';
 import upload from './utils/s3';
 import path from 'path';
@@ -30,8 +31,15 @@ const opts = {
   verbose: false,
 };
 
+const readFileAsync = promisify(fs.readFile);
+
 function loadLabeledImages() {
-  const labels = ['Andrii Prytula', 'Alex Fox', 'Maxim Lohviniuk', 'Vitalii Perehonchuk'];
+  const labels = [
+    'Andrii Prytula',
+    'Alex Fox',
+    'Maxim Lohviniuk',
+    'Vitalii Perehonchuk',
+  ];
   return Promise.all(
     labels.map(async (label) => {
       const descriptions = [];
@@ -50,10 +58,6 @@ function loadLabeledImages() {
   );
 }
 
-const readFileAsync = promisify(fs.readFile);
-
-
-
 const writeFaces = (img, detections, fileName, faceMatchResult) => {
   return new Promise((resolve, reject) => {
     const out = faceapi.createCanvasFromMedia(img);
@@ -62,7 +66,7 @@ const writeFaces = (img, detections, fileName, faceMatchResult) => {
       out,
       detections.map((res) => res.detection),
     );
-    detections.forEach((result, i) => {
+    forEach(detections, (result, i) => {
       const { gender, genderProbability } = result;
       new faceapi.draw.DrawTextField(
         [
@@ -104,9 +108,6 @@ let currentDetectionsLength = 0;
           .withAgeAndGender();
 
         if (!isEmpty(detections)) {
-          const faceMatchResult = detections.map((d) =>
-            faceMatcher.findBestMatch(d.descriptor),
-          );
           currentTime = Date.now();
           let timeDifference = differenceInMilliseconds(currentTime, pastTime);
           pastTime = currentTime;
@@ -116,6 +117,9 @@ let currentDetectionsLength = 0;
           previousDetectionsLength = currentDetectionsLength;
           if (timeDifference > 6000 || detectionsDifference !== 0) {
             try {
+              const faceMatchResult = detections.map((d) =>
+                faceMatcher.findBestMatch(d.descriptor),
+              );
               let fileName = v4();
               await writeFaces(image, detections, fileName, faceMatchResult);
               const finalImage = await readFileAsync(
@@ -126,7 +130,7 @@ let currentDetectionsLength = 0;
                 `${fileName}.jpg`,
               );
               await axios.post(
-                'http://localhost:8000/api/camera/events' /*'https://camera-view.herokuapp.com/api/camera/events'*/,
+                'https://camera-view.herokuapp.com/api/camera/events',
                 {
                   snapshot: uploadResponse.Location,
                   date: format(Date.now(), 'yyyy-MM-dd'),
